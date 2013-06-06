@@ -80,7 +80,7 @@ class Queue(object):
         return self.redis.llen(self.name)
 
 
-class Log(object):
+class BaseLog(object):
     def __init__(self, name=None):
         # You can either init with a name,
         # or subclass and define self.name
@@ -90,3 +90,9 @@ class Log(object):
 
     def send(self, message):
         return self.redis.publish(self.name, message)
+
+class DebugLog(BaseLog):
+    name = 'log:debug'
+
+class Log(BaseLog):
+    name = 'log:default'

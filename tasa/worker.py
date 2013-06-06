@@ -1,8 +1,4 @@
-import subprocess
-import itertools
-import json
 
-from tasa.queue import Queue
 
 class BaseWorker(object):
     qinput = None

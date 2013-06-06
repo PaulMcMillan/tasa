@@ -1,4 +1,4 @@
-from tasa.queue import Queue
+from tasa.store import Queue
 
 
 def test_queue():
