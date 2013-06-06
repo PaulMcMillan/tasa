@@ -32,5 +32,6 @@ def test_base():
     assert 'foo' in qo
     assert 'foofoo' in qo
     assert 'bar' in qo
+    # skip over some values in the interator...
     assert 'bazbazbaz' in qo
     assert len(qo) == 0

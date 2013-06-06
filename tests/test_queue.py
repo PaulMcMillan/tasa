@@ -54,7 +54,7 @@ def test_finite():
 
 def test_subclass():
     class NewQueue(Queue):
-        queue_name = 'new_queue_test'
+        name = 'new_queue_test'
 
     nq = NewQueue()
     nq.clear()

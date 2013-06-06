@@ -20,9 +20,9 @@ class Queue(object):
     # Queues are LPOP RPUSH by convention
     def __init__(self, name=None):
         # You can either init with a name,
-        # or subclass and define self.queue_name
+        # or subclass and define self.name
         if name:
-            self.queue_name = name
+            self.name = name
         self.redis = get_redis()
 
     def __iter__(self):
@@ -39,11 +39,25 @@ class Queue(object):
         return itertools.takewhile(lambda x: x is not None, self)
 
     def next(self):
-        res = self.redis.lpop(self.queue_name)
+        """ Retrieve the next item in the queue.
+
+        Returns deserialized value, or None if there were no entries
+        in the Queue.
+        """
+        # we could use blpop here if we were ok with a minimum of an
+        # entire second of blocking. For now, I think we're better off
+        # polling and allowing adjustment for rate elsewhere.
+        res = self.redis.lpop(self.name)
         return self.deserialize(res)
 
     def send(self, value):
-        return self.redis.rpush(self.queue_name, self.serialize(value))
+        """ Send a value to this LIFO Queue.
+
+        Provided argument is serialized and pushed out. Don't send None.
+        """
+        if value is None:
+            raise TypeError('None is not a valid queue item.')
+        return self.redis.rpush(self.name, self.serialize(value))
 
     def serialize(self, value):
         """ A default data serializer """
@@ -58,7 +72,21 @@ class Queue(object):
             return json.loads(value)
 
     def clear(self):
-        return self.redis.delete(self.queue_name)
+        """ Clear any existing values from this queue. """
+        return self.redis.delete(self.name)
 
     def __len__(self):
-        return self.redis.llen(self.queue_name)
+        """ Return the length of this queue. """
+        return self.redis.llen(self.name)
+
+
+class Log(object):
+    def __init__(self, name=None):
+        # You can either init with a name,
+        # or subclass and define self.name
+        if name:
+            self.name = name
+        self.redis = get_redis()
+
+    def send(self, message):
+        return self.redis.publish(self.name, message)
