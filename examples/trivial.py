@@ -3,23 +3,24 @@
 The easiest way to get this demo running is to install redis on this
 machine, and make sure tasa is available on your pythonpath.
 
-Here we accept 3 numbers as input (a, b, c) and do this operation:
+In our (contrived) example, we want to accept jobs consisting of 3
+numbers as input (a, b, c) and do this operation to them in two
+separate steps:
 (a + b) * c
-in two separate steps.
 
 You'll understand this better if you open tasa/worker.py while you're
 reading.
 
 The entire example is contained in this file - in a real deployment
-multiple workers would be running as separate processes for each
-stage.
+multiple workers would be running simultaneously as separate processes
+for each stage.
 """
 
 from tasa.worker import BaseWorker
 from tasa.store import Queue
 
 
-# First we define our add worker
+# Our first worker is going to take care of the addition part of our job.
 class AddWorker(BaseWorker):
     # First we define our input and output queues
     # This worker is going to process items it finds in the 'add_input' queue
@@ -35,12 +36,12 @@ class AddWorker(BaseWorker):
         a, b, c = job
         # do our operation
         added = a + b
-        # and *YIELD* our result.The run method can a) return nothing
+        # and *YIELD* our result. The run method can a) return nothing
         # b) return a list of results, or c) yield each result as it
         # is calculated. In many cases, a run takes one input and
         # produces one output, as in this example. However, sometimes
-        # one input results in multiple downstream jobs, which is why
-        # we have this flexibilty.
+        # one input results in multiple output jobs, which is why we
+        # have this flexibilty.
         yield [added, c]
         # Note that the value we yield here is pushed into self.qoutput by
         # BaseWorker.handle(). If we need to send results to more than
@@ -89,8 +90,8 @@ add_input.send([1,10,100])
 # any worker polling that input queue
 print "We have %d items in add_input" % len(add_input)
 
-# However, since this is a demo, we don't have any workers yet. Let's
-# make one.
+# However, since this is a demo, we don't have any workers
+# running. Let's make one.
 add_worker = AddWorker()
 # Now we have an instance of the AddWorker, we call it to get a generator.
 for job in add_worker():
@@ -112,10 +113,11 @@ for job in add_worker():
 print "We have %d items in add_input" % len(add_input)
 print "We have %d items in multiply_input" % len(multiply_input)
 
-#so we create an instance of MultWorker...
+# so we create an instance of MultWorker...
 mult_worker = MultWorker()
 
-#and iterate over it in a slightly different manner
+# and iterate over it in a slightly different manner for the sake of
+# example
 current_job = True
 while current_job:
     # remember, calling the worker class returns a generator, and
