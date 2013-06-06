@@ -6,14 +6,19 @@ import redis
 
 # LPOP RPush
 
-def get_redis():
-    # ugh, fixme this is horrible
-    # This should become a shared pool once we have worker management
-    redis_address = os.environ.get('REDIS_ADDRESS')
-    if redis_address:
-        return redis.StrictRedis.from_url(redis_address)
-    else:
-        return redis.StrictRedis()
+class LazyRedis(object):
+    def __getattr__(self, name):
+        # ugh, fixme this is not a good way to do this
+        redis_address = os.environ.get('REDIS_ADDRESS')
+        if redis_address:
+            obj = redis.StrictRedis.from_url(redis_address)
+        else:
+            obj = redis.StrictRedis()
+        self.__class__ = obj.__class__
+        self.__dict__ = obj.__dict__
+        return getattr(obj, name)
+
+connection = LazyRedis()
 
 
 class Queue(object):
@@ -23,7 +28,7 @@ class Queue(object):
         # or subclass and define self.name
         if name:
             self.name = name
-        self.redis = get_redis()
+        self.redis = connection
 
     def __iter__(self):
         return self
@@ -86,7 +91,7 @@ class BaseLog(object):
         # or subclass and define self.name
         if name:
             self.name = name
-        self.redis = get_redis()
+        self.redis = connection
 
     def send(self, message):
         return self.redis.publish(self.name, message)
