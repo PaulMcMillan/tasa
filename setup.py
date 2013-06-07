@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-version = '0.1.dev1'
+version = '0.1.dev2'
 
 setup(
     name="tasa",
