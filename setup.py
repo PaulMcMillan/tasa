@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
+version = '0.1dev1'
+
 setup(
     name="tasa",
-    version='0.1dev1',
+    version=version,
     description="A simple job queue framework using redis.",
     long_description=open("README.md").read(),
     url='https://github.com/PaulMcMillan/tasa',
