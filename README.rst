@@ -1,5 +1,6 @@
+========
 T-A S.A.
-====
+========
 
 A simple redis-powered task queue and job system. Designed to be
 easily extensible with code, rather than excessively featureful out of

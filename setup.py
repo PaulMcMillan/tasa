@@ -7,7 +7,7 @@ setup(
     name="tasa",
     version=version,
     description="A simple job queue framework using redis.",
-    long_description=open("README.md").read(),
+    long_description=open("README.rst").read(),
     url='https://github.com/PaulMcMillan/tasa',
     license="Simplified BSD",
     author="Paul McMillan",
