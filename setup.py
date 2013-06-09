@@ -6,7 +6,7 @@ version = '0.1.3.dev0'
 setup(
     name="tasa",
     version=version,
-    description="A simple job queue framework using redis.",
+    description="A simple framework for distributed task workflow using redis.",
     long_description=open("README.rst").read(),
     url='https://github.com/PaulMcMillan/tasa',
     license="Simplified BSD",
