@@ -1,1 +1,3 @@
 include README.rst LICENSE
+prune tests
+prune examples
