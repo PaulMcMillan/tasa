@@ -13,6 +13,13 @@ setup(
     author="Paul McMillan",
     author_email="paul@mcmillan.ws",
 
+    entry_points={
+        'console_scripts': [
+            'tasa = tasa.cli:run',
+            'tasa-log = tasa.cli:log',
+            ],
+        },
+
     install_requires=[
         "redis",
         ],
