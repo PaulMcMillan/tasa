@@ -3,11 +3,15 @@ import sys
 import time
 
 
-parser = argparse.ArgumentParser()
+def _get_argparser():
+    parser = argparse.ArgumentParser()
+    # add common argparser arguments here
+    return parser
 
 
 def run():
     sys.path.insert(0, '')
+    parser = _get_argparser()
     parser.description = 'Run a tasa worker.'
     parser.add_argument('worker',
                         type=lambda w: w.partition(':')[::2],
@@ -34,6 +38,7 @@ def run():
 
 
 def log():
+    parser = _get_argparser()
     parser.description = 'Follow logs from a running tasa system.'
     args = parser.parse_args()
 

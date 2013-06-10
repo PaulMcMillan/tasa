@@ -86,6 +86,7 @@ class Queue(object):
 
 
 class BaseLog(object):
+    # Note that log objects are blocking read, unlike queue objects
     def __init__(self, name=None):
         # You can either init with a name,
         # or subclass and define self.name
@@ -95,6 +96,9 @@ class BaseLog(object):
 
     def send(self, message):
         return self.redis.publish(self.name, message)
+
+    def next(self):
+        pass
 
 class DebugLog(BaseLog):
     name = 'log:debug'
