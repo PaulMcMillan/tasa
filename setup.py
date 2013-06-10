@@ -37,7 +37,7 @@ setup(
         "pytest-cov",
         ],
 
-    packages=find_packages(exclude=['tests', 'examples']),
+    packages=find_packages(),
 
     classifiers=[
         "Environment :: Console",
