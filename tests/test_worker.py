@@ -22,7 +22,7 @@ def test_base():
         qi.send(x)
 
     jobs_run = []
-    for job in w():
+    for job in w:
         if job is None:
             break
         jobs_run.append(job)

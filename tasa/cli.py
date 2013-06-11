@@ -7,7 +7,8 @@ import tasa
 def _get_argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--version', action='version',
-                        version='Tasa %s on Python %s' % (tasa.__version__, sys.version)
+                        version='Tasa %s on Python %s' % (
+            tasa.__version__, sys.version),
                         )
     # add common argparser arguments here
     return parser
@@ -35,7 +36,7 @@ def run():
     print 'Running worker: %s:%s' % (args.worker[0],
                                      worker.__class__.__name__)
     try:
-        for job in worker():
+        for job in worker:
             if job:
                 print "Doing job:", job
             # FIXME: do something better here

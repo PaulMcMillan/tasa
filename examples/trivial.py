@@ -93,8 +93,8 @@ print "We have %d items in add_input" % len(add_input)
 # However, since this is a demo, we don't have any workers
 # running. Let's make one.
 add_worker = AddWorker()
-# Now we have an instance of the AddWorker, we call it to get a generator.
-for job in add_worker():
+# Now we have an instance of the AddWorker
+for job in add_worker:
     # This iterates over each job, and when it gets to the end of the
     # jobs, it starts returning None. This signal (returning None when
     # there is no work to do) is why you can't have a job consisting
@@ -114,7 +114,7 @@ print "We have %d items in add_input" % len(add_input)
 print "We have %d items in multiply_input" % len(multiply_input)
 
 # so we create an instance of MultWorker...
-mult_worker = MultWorker()
+mult_worker = iter(MultWorker())
 
 # and iterate over it in a slightly different manner for the sake of
 # example
@@ -124,7 +124,7 @@ while current_job:
     # as you iterate over that, each call to next() does the actual
     # work for a job.
     print "Processing mult_job:",
-    current_job = mult_worker().next()
+    current_job = mult_worker.next()
     print "We have %d items in multiply_input" % len(multiply_input)
 
 # at this point, the results from the mult worker should be printed

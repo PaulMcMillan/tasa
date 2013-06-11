@@ -26,7 +26,7 @@ class BaseWorker(object):
         """
         raise NotImplementedError
 
-    def __call__(self, *args, **kwargs):
+    def __iter__(self, *args, **kwargs):
         """ Iterate through available jobs, handling each one.  Note
         that this construction leaves the blocking/non-blocking
         decision up to the job itself:
@@ -38,25 +38,3 @@ class BaseWorker(object):
             if job is not None:
                 self.handle(job)
             yield job
-
-
-# This is... under construction.
-# class SupervisorWorker(BaseWorker):
-#     # This is really just for running Tasa worker processes. Don't
-#     # pass things in here that expect reading or writing on stdio. If
-#     # you need different behavior, subclass or write your own.
-#     qinput = Queue('new_jobs')
-
-#     workers = []
-
-#     def run(self, job):
-#         self.workers.append(subprocess.Popen(job))
-
-#     def update(self):
-#         # update any workers which may have been closed
-#         for worker in self.workers[:]:
-#             if worker.poll() is not None:
-#                 self.workers.remove(worker)
-
-#     def handle_signal(self):
-#         pass
