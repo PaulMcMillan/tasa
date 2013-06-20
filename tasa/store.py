@@ -6,6 +6,7 @@ import redis
 
 # LPOP RPush
 
+
 class LazyRedis(object):
     def __getattr__(self, name):
         # ugh, fixme this is not a good way to do this
@@ -100,8 +101,10 @@ class BaseLog(object):
     def next(self):
         pass
 
+
 class DebugLog(BaseLog):
     name = 'log:debug'
+
 
 class Log(BaseLog):
     name = 'log:default'

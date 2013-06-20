@@ -4,12 +4,13 @@ import time
 
 import tasa
 
+
 def _get_argparser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--version', action='version',
-                        version='Tasa %s on Python %s' % (
-            tasa.__version__, sys.version),
-                        )
+    parser.add_argument(
+        '-v', '--version', action='version',
+        version='Tasa %s on Python %s' % (
+            tasa.__version__, sys.version))
     # add common argparser arguments here
     return parser
 
@@ -52,7 +53,7 @@ def log():
     args = parser.parse_args()
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     # deal with being run directly rather than as an installed script
     cmd = 'undefined' if len(sys.argv) < 2 else sys.argv.pop(1)
     if cmd == 'run':
@@ -61,4 +62,3 @@ if __name__=='__main__':
         log()
     else:
         print "First argument must be 'run' or 'log'"
-
