@@ -120,9 +120,9 @@ mult_worker = iter(MultWorker())
 # example
 current_job = True
 while current_job:
-    # remember, calling the worker class returns a generator, and
-    # as you iterate over that, each call to next() does the actual
-    # work for a job.
+    # remember, calling iter() on the worker class returns a
+    # generator, and as you iterate over that, each call to next()
+    # does the actual work for a job.
     print "Processing mult_job:",
     current_job = mult_worker.next()
     print "We have %d items in multiply_input" % len(multiply_input)
