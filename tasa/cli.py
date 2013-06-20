@@ -47,10 +47,16 @@ def run():
         sys.exit()
 
 
+def runm():
+    parser = _get_argparser()
+    parser.description = 'Run multiple copies of tasa workers.'
+    parser.add_argument()
+
 def log():
     parser = _get_argparser()
     parser.description = 'Follow logs from a running tasa system.'
     args = parser.parse_args()
+    raise NotImplemented()
 
 
 if __name__ == '__main__':

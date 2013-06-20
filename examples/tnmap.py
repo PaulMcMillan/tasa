@@ -45,6 +45,18 @@ class Results(BaseWorker):
             f.write(result)
 
 
+class Monitor(BaseWorker):
+    def jobs(self):
+        while True:
+            yield time.ctime()
+            time.sleep(10)
+
+    def run(self, job):
+        queues = [Queue('job:raw'), Queue('result:raw')]
+        for q in queues:
+            print 'Queue:', q.name, len(q)
+
+
 if __name__ == '__main__':
     SUBNET_PREFIXLEN = 27
     portlist = '80,443'
