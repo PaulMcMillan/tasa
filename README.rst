@@ -20,8 +20,8 @@ environment variable.
 FAQ
 ---
 
- * I get a traceback like "redis.exceptions.ResponseError: operation
-   not permitted"
-   - Did you remember to set `REDIS_ADDRESS` env var? This will happen
-     if you added a redis password and did not set a connection
-     string.
+* I get a traceback like "redis.exceptions.ResponseError: operation
+  not permitted"
+
+  Did you remember to set `REDIS_ADDRESS` env var? This will happen if
+  you added a redis password and did not set a connection string.
