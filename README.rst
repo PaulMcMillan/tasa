@@ -51,3 +51,15 @@ FAQ
 
   Did you remember to set `REDIS_ADDRESS` env var? This will happen if
   you added a redis password and did not set a connection string.
+
+Security
+--------
+
+The security of tasa depends entirely on how you use it. If you use a
+password and tunnel redis communications over an encrypted and
+authenticated transport, you'll do pretty well. The easiest way to do
+this is to use SSH port forwarding to transport redis traffic. You can
+also put stud in front of redis to do TLS, though this is more
+complex.
+
+The author uses tasa workers primary on disposable cloud hosts.
