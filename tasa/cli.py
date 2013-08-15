@@ -1,8 +1,16 @@
+"""
+This should probably be rewritten at some point. It's not taking good
+advantage of argparse.
+"""
+
 import argparse
 import sys
 import time
 import inspect
 import logging
+import signal
+import sys
+from multiprocessing import Process
 
 import tasa
 from tasa.worker import BaseWorker
@@ -10,6 +18,10 @@ from tasa.worker import BaseWorker
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+
+def signal_handler(signal, frame):
+    sys.exit(0)
 
 
 def _get_argparser():
@@ -62,13 +74,24 @@ def run():
                 time.sleep(.1)
     except KeyboardInterrupt:
         print 'Exiting worker.'
-        sys.exit()
 
 
 def runm():
-    parser = _get_argparser()
-    parser.description = 'Run multiple copies of tasa workers.'
-    parser.add_argument()
+    """ This is super minimal and pretty hacky, but it counts as a first pass.
+    """
+    signal.signal(signal.SIGINT, signal_handler)
+    count = int(sys.argv.pop(1))
+    processes = [Process(target=run, args=()) for x in range(count)]
+    try:
+        for p in processes:
+            p.start()
+    except KeyError:
+        # Not sure why we see a keyerror here. Weird.
+        pass
+    finally:
+        for p in processes:
+            p.join()
+
 
 def log():
     parser = _get_argparser()

@@ -16,6 +16,7 @@ setup(
     entry_points={
         'console_scripts': [
             'tasa = tasa.cli:run',
+            'tasam = tasa.cli:runm',
             'tasa-log = tasa.cli:log',
             ],
         },
