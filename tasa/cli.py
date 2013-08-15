@@ -2,9 +2,14 @@ import argparse
 import sys
 import time
 import inspect
+import logging
 
 import tasa
 from tasa.worker import BaseWorker
+
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 def _get_argparser():
@@ -49,9 +54,12 @@ def run():
     try:
         for job in worker:
             if job:
-                print "Doing job:", job
-            # FIXME: do something better here
-            time.sleep(.1)
+                logger.info("Doing job: %s:%s",
+                            worker.__class__.__name__,
+                            str(job)[:50])
+            else:
+                # FIXME: do something better here
+                time.sleep(.1)
     except KeyboardInterrupt:
         print 'Exiting worker.'
         sys.exit()
