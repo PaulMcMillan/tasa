@@ -32,16 +32,26 @@ To actually use this example to distribute a task, on each worker node:
  #) sudo apt-get install python-pip nmap
  #) sudo pip install -U tasa
  #) wget https://raw.github.com/PaulMcMillan/tasa/master/examples/tnmap.py
- #) export REDIS_ADDRESS=redis://username:password@10.0.0.5:6379/0
+ #) export REDIS_ADDRESS=redis://username:password@example.org:6379/0
  #) tasa tnmap:Runner
 
-Then run the results worker and inject jobs from the master machine.
+Then run the results worker and inject jobs from the master
+machine. Experiment with changing values in the script - the example
+is actually general enough to run any process, not just nmap.
 
 Don't forget to configure your redis server to listen on an ip
 accessible to your clients, and for the love of Kaminsky, set a
 password even if you are on a private network. If you're on an
 untrusted network, you're responsible for encryption - either tunnel
 over an SSH port forward, or wrap redis in TLS using stud/stunnel.
+
+How does it work?
+-----------------
+
+Tasa is primarily a thin framework to help you build composable work
+flows. Break your problem into small chunks, run workers on several
+machines, and insert jobs into the worker's input queue, and consume
+them from the output.
 
 FAQ
 ---
@@ -51,6 +61,12 @@ FAQ
 
   Did you remember to set `REDIS_ADDRESS` env var? This will happen if
   you added a redis password and did not set a connection string.
+
+* What version of redis-server do I need?
+
+  Tasa is developed with redis 2.6.7. Older versions aren't explicitly
+  tested, though the 2.4 branch will probably work with reduced
+  functionality. Newer versions should work without trouble.
 
 Security
 --------

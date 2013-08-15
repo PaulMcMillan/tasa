@@ -1,8 +1,10 @@
 import argparse
 import sys
 import time
+import inspect
 
 import tasa
+from tasa.worker import BaseWorker
 
 
 def _get_argparser():
@@ -32,7 +34,15 @@ def run():
     try:
         WorkerClass = getattr(worker_module, worker_class_name)
     except AttributeError:
-        raise Exception('Worker not found')
+        print "No matching workers found.\n"
+        potential_workers = inspect.getmembers(
+            worker_module,
+            lambda x: type(x) == type and issubclass(x, BaseWorker))
+        if potential_workers:
+            print "Found potential workers:"
+            for name, value in potential_workers:
+                print ':'.join([args.worker[0], name])
+        exit(1)
     worker = WorkerClass()
     print 'Running worker: %s:%s' % (args.worker[0],
                                      worker.__class__.__name__)
