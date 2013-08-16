@@ -63,7 +63,12 @@ if __name__ == '__main__':
     ip = netaddr.IPNetwork(sys.argv[1])
     qinput = Queue('job:raw')
 
-    for sub in ip.subnet(SUBNET_PREFIXLEN):
+    if SUBNET_PREFIXLEN < ip.prefixlen:
+        subnet_list = [ip,]
+    else:
+        subnet_list = ip.subnet(SUBNET_PREFIXLEN)
+
+    for sub in subnet_list:
         cmd = ['nmap',
                '-T4',       # use aggressive timings
                '--open',    # only return open ports
