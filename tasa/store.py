@@ -1,10 +1,14 @@
 import itertools
 import json
+import logging
 import os
 
 import redis
 
+
 # LPOP RPush
+
+logger = logging.getLogger(__name__)
 
 
 class LazyRedis(object):
@@ -18,6 +22,7 @@ class LazyRedis(object):
         self.__class__ = obj.__class__
         self.__dict__ = obj.__dict__
         return getattr(obj, name)
+
 
 connection = LazyRedis()
 
@@ -54,7 +59,9 @@ class Queue(object):
         # entire second of blocking. For now, I think we're better off
         # polling and allowing adjustment for rate elsewhere.
         res = self.redis.lpop(self.name)
-        return self.deserialize(res)
+        value = self.deserialize(res)
+        logger.debug('Popped from "%s": %s', self.name, repr(value))
+        return value
 
     def send(self, value):
         """ Send a value to this LIFO Queue.
@@ -63,6 +70,7 @@ class Queue(object):
         """
         if value is None:
             raise TypeError('None is not a valid queue item.')
+        logger.debug('Sending to "%s": %s', self.name, repr(value))
         return self.redis.rpush(self.name, self.serialize(value))
 
     def serialize(self, value):
@@ -79,6 +87,7 @@ class Queue(object):
 
     def clear(self):
         """ Clear any existing values from this queue. """
+        logger.debug('Clearing queue: "%s"', self.name)
         return self.redis.delete(self.name)
 
     def __len__(self):
