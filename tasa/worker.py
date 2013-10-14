@@ -15,6 +15,8 @@ class BaseWorker(object):
         # should handle decide about None here?
         result = self.run(job)
         if result:
+            # this should group up send(*result[:n]) since we're breaking the
+            # generator here
             for r in result:
                 self.qoutput.send(r)
 

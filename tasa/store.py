@@ -63,15 +63,17 @@ class Queue(object):
         logger.debug('Popped from "%s": %s', self.name, repr(value))
         return value
 
-    def send(self, value):
+    def send(self, *args):
         """ Send a value to this LIFO Queue.
 
         Provided argument is serialized and pushed out. Don't send None.
         """
-        if value is None:
+        # this and the serializer could use some streamlining
+        if None in args:
             raise TypeError('None is not a valid queue item.')
-        logger.debug('Sending to "%s": %s', self.name, repr(value))
-        return self.redis.rpush(self.name, self.serialize(value))
+        serialized_values = [self.serialize(value) for value in args]
+        logger.debug('Sending to "%s": %s', self.name, serialized_values)
+        return self.redis.rpush(self.name, *serialized_values)
 
     def serialize(self, value):
         """ A default data serializer """
