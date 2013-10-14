@@ -11,6 +11,12 @@ def test_queue():
     assert len(myq) == 1
     assert myq.next() == 'foo'
     assert len(myq) == 0
+    myq.send('zoo', 'bar', 'baz')
+    assert len(myq) == 3
+    assert myq.next() == 'zoo'
+    assert myq.next() == 'bar'
+    assert myq.next() == 'baz'
+    assert len(myq) == 0
 
 
 def test_clear():
