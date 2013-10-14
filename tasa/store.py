@@ -5,6 +5,7 @@ import os
 
 import redis
 
+import tasa
 
 # LPOP RPush
 
@@ -13,8 +14,7 @@ logger = logging.getLogger(__name__)
 
 class LazyRedis(object):
     def __getattr__(self, name):
-        # ugh, fixme this is not a good way to do this
-        redis_address = os.environ.get('REDIS_ADDRESS')
+        redis_address = getattr(tasa.conf, 'redis', None)
         if redis_address:
             obj = redis.StrictRedis.from_url(redis_address)
         else:
