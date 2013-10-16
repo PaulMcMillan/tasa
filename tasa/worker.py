@@ -1,8 +1,12 @@
+from itertools import islice
+
 
 
 class BaseWorker(object):
     qinput = None
     qoutput = None
+
+    chunk_size = 1
 
     def jobs(self):
         """ Iterator that produces jobs to run in this worker.
@@ -12,13 +16,12 @@ class BaseWorker(object):
         return self.qinput
 
     def handle(self, job):
-        # should handle decide about None here?
         result = self.run(job)
-        if result:
-            # this should group up send(*result[:n]) since we're breaking the
-            # generator here
-            for r in result:
-                self.qoutput.send(r)
+        # don't do anything if result is None
+        chunk = result and list(islice(result, self.chunk_size))
+        while chunk:
+            self.qoutput.send(*chunk)
+            chunk = list(islice(result, self.chunk_size))
 
     def run(self, job):
         """ The actual work of the class.
