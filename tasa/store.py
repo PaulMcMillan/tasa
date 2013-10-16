@@ -2,6 +2,7 @@ import itertools
 import json
 import logging
 import os
+import pickle
 
 import redis
 
@@ -97,25 +98,14 @@ class Queue(object):
         return self.redis.llen(self.name)
 
 
-class BaseLog(object):
-    # Note that log objects are blocking read, unlike queue objects
-    def __init__(self, name=None):
-        # You can either init with a name,
-        # or subclass and define self.name
-        if name:
-            self.name = name
-        self.redis = connection
+class PickleQueue(Queue):
+    """ A queue you can put binary objects into. Not human readable.
 
-    def send(self, message):
-        return self.redis.publish(self.name, message)
+    Don't unpickle untrusted data!
+    """
+    def serialize(self, value):
+        return pickle.dumps(value)
 
-    def next(self):
-        pass
-
-
-class DebugLog(BaseLog):
-    name = 'log:debug'
-
-
-class Log(BaseLog):
-    name = 'log:default'
+    def deserialize(self, value):
+        if value:
+            return pickle.loads(value)
