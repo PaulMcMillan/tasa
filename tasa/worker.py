@@ -1,12 +1,11 @@
 from itertools import islice
 
 
-
 class BaseWorker(object):
     qinput = None
     qoutput = None
 
-    chunk_size = 1
+    output_chunk_size = 1
 
     def jobs(self):
         """ Iterator that produces jobs to run in this worker.
@@ -18,10 +17,10 @@ class BaseWorker(object):
     def handle(self, job):
         result = self.run(job)
         # don't do anything if result is None
-        chunk = result and list(islice(result, self.chunk_size))
+        chunk = result and list(islice(result, self.output_chunk_size))
         while chunk:
             self.qoutput.send(*chunk)
-            chunk = list(islice(result, self.chunk_size))
+            chunk = list(islice(result, self.output_chunk_size))
 
     def run(self, job):
         """ The actual work of the class.

@@ -71,7 +71,7 @@ def run():
                             str(job)[:50])
             else:
                 # FIXME: do something better here
-                time.sleep(.1)
+                time.sleep(.3)
     except KeyboardInterrupt:
         print 'Exiting worker.'
 
