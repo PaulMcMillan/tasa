@@ -93,6 +93,19 @@ class Queue(object):
         logger.debug('Clearing queue: "%s"', self.name)
         return self.redis.delete(self.name)
 
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return self.deserialize(self.redis.lindex(self.name, key))
+        elif isinstance(key, slice):
+            if key.step:
+                raise TypeError, "Slice steps are not supported"
+            start = 0 if key.start is None else key.start
+            stop = -1 if key.stop is None else key.stop
+            return (self.deserialize(item) for item in
+                    self.redis.lrange(self.name, start, stop))
+        else:
+            raise TypeError, "Invalid argument type."
+
     def __len__(self):
         """ Return the length of this queue. """
         return self.redis.llen(self.name)
