@@ -94,6 +94,7 @@ class Queue(object):
         return self.redis.delete(self.name)
 
     def __getitem__(self, key):
+        """ Allow non-consuming slice access to queues. """
         if isinstance(key, int):
             return self.deserialize(self.redis.lindex(self.name, key))
         elif isinstance(key, slice):
