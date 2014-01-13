@@ -1,3 +1,5 @@
+import time
+
 from tasa.store import Queue
 
 
@@ -56,6 +58,25 @@ def test_finite():
     assert len(iq) == 10
     assert range(10) == [x for x in fq]
     assert len(iq) == 0
+
+
+def test_blocking():
+    iq = Queue('blocking_test_queue')
+    iq.clear()
+    iq.blocking = 1
+
+    for x in range(10):
+        iq.send(x)
+
+    for x, y in zip(range(10) + [None], iq):
+        assert x == y
+
+    start_time = time.time()
+    assert iq.next() == None
+    elapsed = time.time() - start_time
+    print elapsed
+    assert 1 < elapsed < 4
+
 
 
 def test_subclass():

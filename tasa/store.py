@@ -29,6 +29,11 @@ connection = LazyRedis()
 
 
 class Queue(object):
+    """ Basic queue object implemented with Redis lists. """
+    # Read blocking timeout in seconds. -1 is non-blocking, 0 is
+    # block forever.
+    blocking = -1
+
     # Queues are LPOP RPUSH by convention
     def __init__(self, name=None):
         # You can either init with a name,
@@ -56,10 +61,13 @@ class Queue(object):
         Returns deserialized value, or None if there were no entries
         in the Queue.
         """
-        # we could use blpop here if we were ok with a minimum of an
-        # entire second of blocking. For now, I think we're better off
-        # polling and allowing adjustment for rate elsewhere.
-        res = self.redis.lpop(self.name)
+        if self.blocking >= 0:
+            # returns queue name and item, we just need item
+            res = self.redis.blpop([self.name], timeout=self.blocking)
+            if res:
+                res = res[1]
+        else:
+            res = self.redis.lpop(self.name)
         value = self.deserialize(res)
         logger.debug('Popped from "%s": %s', self.name, repr(value))
         return value
